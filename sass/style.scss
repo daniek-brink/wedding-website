@@ -24,7 +24,6 @@ $input-border-focus:  $brand-primary !default;
 $form-group-margin-bottom:       30px !default;
 
 
-
 // Mixin
 @mixin translateX($translatex) {
 	-moz-transform: translateX($translatex);
@@ -358,13 +357,24 @@ h1, h2, h3, h4, h5, h6, figure {
 
 		}
 	}
+
+.form-control {
+  border-radius: 10px;
+  border: none;
+  background-color: rgba(255,255,255,0.85);
+  color: #333;
+}
+.form-control::placeholder {
+  color: #999;
+}
+
 	.overlay {
 		position: absolute;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: rgba(0, 0, 0, .5);
+		background: rgba(0, 0, 0, .2);
 		@include transition(.5s);
 	}
 	&:hover {
