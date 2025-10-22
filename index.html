@@ -53,12 +53,28 @@
 	<!-- Theme style  -->
 	<link rel="stylesheet" href="css/style.css">
 
+	<script src="https://kit.fontawesome.com/c967083810.js" crossorigin="anonymous"></script>
+
 	<!-- Modernizr JS -->
 	<script src="js/modernizr-2.6.2.min.js"></script>
 	<!-- FOR IE9 below -->
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
+
+	<script>
+		let submitted = false;
+
+		function handleFormSubmit() {
+			submitted = true;
+		}
+
+		function showThankYou() {
+			document.getElementById('rsvp-form').style.display = 'none';
+			document.getElementById('thank-you').style.display = 'block';
+			document.getElementById('thank-you').classList.add('fade-in');
+		}
+	</script>
 
 	</head>
 	<body>
@@ -451,56 +467,119 @@
 			<div class="row animate-box">
 				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
 					<h2>Sien ons jou daar?</h2>
-					<p>Vul asb die vorm in om ons te laat weet of jy saam met ons kom vier.</p>
+					<p>Vul asb die vorm in voor <strong>31 Augustus 2026</strong></p>
 				</div>
 			</div>
 
+			<div id="thank-you" class="thank-you-message animate-box" style="text-align: center; display:none;"> 
+				<h3 style="color: rgba(255, 255, 255, 0.5);">Dankie vir jou boodskap!</h3>
+			</div>
 
 			<div class="row animate-box">
 				<div class="col-md-10 col-md-offset-1">
-				<div id="thank-you" class="thank-you-message" style="text-align: center; display:none;"> 
-					<h3 style="color: rgba(255, 255, 255, 0.5);">Dankie vir jou boodskap!</h3>
-				</div>
+
 					<form class="form-inline" id="rsvp-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdsX4LBT0jvqfnUhA0bCUat9OYLZcanefLd5lPIzmp-JSFd4w/formResponse" method="POST" target="hidden_iframe" onsubmit="handleFormSubmit()">
-						<div class="col-md-4 col-sm-4">
+						<div class="col-md-6 col-sm-6">
 							<div class="form-group">
 								<label for="name" class="sr-only">Naam</label>
-								<input type="text" class="form-control" name="entry.1498135098" id="name" required placeholder="Naam">
+								<input type="text" class="form-control" name="entry.1498135098" id="name" required placeholder="Naam" autocomplete="name">
 							</div>
 						</div>
-						<div class="col-md-4 col-sm-4">
+						<div class="col-md-6 col-sm-6">
 							<div class="form-group">
 								<label for="email" class="sr-only">E-pos</label>
-								<input type="email" class="form-control" name="entry.1424661284" id="email" required placeholder="E-pos">
+								<input type="email" class="form-control" name="entry.1424661284" id="email" required placeholder="E-pos" autocomplete="email">
 
 							</div>
 						</div>
-						<div class="col-md-4 col-sm-4">
-							<div class="form-group">
-								<label for="diet" class="sr-only">Dieetvereistes</label>
-								<input type="diet" class="form-control" id="diet" name="entry.2606285" placeholder="Dieetvereistes">
-							</div>
-						</div>
-					
 
-						<div class="row animate-box">
 
-								<div class="form-group col-md-6 col-md-offset-1" style="color: rgba(255, 255, 255, 0.5); margin-left:20px;">
-									<label for="yesresponse">
-										<input type="radio" name="entry.877086558"  value="Ja" checked style="accent-color: #F14E95;"> Ja, ek sal daar wees</label>
-									</div>
-								<div class="form-group col-md-6 col-md-offset-1" style="color: rgba(255, 255, 255, 0.5); margin-left:20px;">
-									<label for="noresponse">
-										<input type="radio" name="entry.877086558" value="Nee" style="accent-color: #F14E95;"> Nee, ek kan dit nie maak nie</label>
+						<div class="col-md-12 col-sm-12">
+							
+							<div class="radio-card form-group">
+
+								<div class="radio-grid">
+										<label for="yes"><input type="radio" name="entry.877086558"  value="Ja" checked style="accent-color: #F14E95;" id="yes"> Ja, ek sal daar wees</label>
+
+										<label for="no">
+										<input type="radio" name="entry.877086558" value="Nee" style="accent-color: #F14E95;" id="no"> Nee, ek kan dit nie maak nie</label>
+									
 								</div>
-
-
+							</div>
 						</div>
 
 
+						<div class="text-center form-question animate-box">
+							<p><i class="fa-solid fa-martini-glass-citrus"></i>  Kies asb jou welkom-drankie</p>
+						</div>
+
+
+						<div class="col-md-12 col-sm-12">
+							<div class="radio-card form-group">
+								<div class="radio-grid">
+									<label for="rosewyn">
+										<input type="radio" name="entry.1817158878"  value="rose" style="accent-color: #F14E95;" id="rosewyn">Rosé</label>
+									<label for="mrsmuller">
+										<input type="radio" name="entry.1817158878" value="mrs muller" style="accent-color: #F14E95;" id="mrsmuller">Mrs Müller aperitif</label>
+									<label for="mcc">
+										<input type="radio" name="entry.1817158878" value="mcc" style="accent-color: #F14E95;" id="mcc"> Cap Classique</label>
+									<label for="craftbeer">
+										<input type="radio" name="entry.1817158878" value="craft beer" style="accent-color: #F14E95;" id="craftbeer">Boetiekbier</label>
+									<label for="lemonade">
+										<input type="radio" name="entry.1817158878" value="pink lemonade" style="accent-color: #F14E95;" id="lemonade">Pienk lemonade (nie-alkoholies)</label>
+								</div>
+							</div>
+						</div>
+
+						<div class="text-center form-question animate-box">
+							<p><i class="fa-solid fa-utensils"></i>  Kies asb wat jy wil eet</p>
+						</div>
+
+						<div class="col-md-12 col-sm-12">
+							<div class="radio-card form-group ">
+								<div>
+									<label for="porkbelly">
+											<input type="radio" name="entry.1472162737"  value="pork belly" style="accent-color: #F14E95;" id="porkbelly"> Sticky pork belly • kimchee mayo • crushed cucumber salad • spiced cracker	<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></label>
+										<label for="chicken">
+											<input type="radio" name="entry.1472162737" value="chicken" style="accent-color: #F14E95;" id="chicken"> Truffled chicken • Provençal mushroom crème • caper • fondant potato</label>
+										<label for="sirloin">
+											<input type="radio" name="entry.1472162737" value="sirloin" style="accent-color: #F14E95;" id="sirloin"> Dry aged sirloin • stout & marrow sauce • fondant potato • garlic green beans</label>
+								</div>
+								</div>
+									
+						</div>
+
+						<div class="text-center form-question animate-box">
+							<p><i class="fa-solid fa-champagne-glasses"></i>  Wat is jou wynvoorkeur?</p>
+						</div>
+
+						<div class="col-md-12 col-sm-12">
+							<div class="radio-card form-group">
+							<div class="radio-grid">
+								<label for="rooi"><input type="radio" name="entry.1653885075"  value="rooi" style="accent-color: #F14E95;" id="rooi"> Rooiwyn</label>
+								<label for="wit"><input type="radio" name="entry.1653885075" value="wit" style="accent-color: #F14E95;" id="wit"> Witwyn</label>
+								<label for="rose"><input type="radio" name="entry.1653885075" value="rose" style="accent-color: #F14E95;" id="rose"> Rosé</label>
+								<label for="other"><input type="radio" name="entry.1653885075" value="other" style="accent-color: #F14E95;" id="other">Ander (kontantkroeg)</label>
+							</div>
+							</div>
+						</div>
+
+
+								
+
+					
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<label for="diet" class="sr-only">Spesiale dieëtvereistes</label>
+								<input type="text" class="form-control" id="diet" name="entry.2606285" placeholder="Spesiale dieëtvereistes">
+							</div>
+						</div>
+
+
+
 						<div class="row animate-box">
-							<div class="col-md-10 col-md-offset-1">
-								<button type="submit" class="btn btn-default btn-block">Stuur</button>
+							<div class="text-center">
+								<button type="submit" class="btn btn-default">Stuur</button>
 							</div>
 						</div>
 					</form>
@@ -514,18 +593,8 @@
 
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { showThankYou(); }"></iframe>
 
-	<script>
-		let submitted = false;
 
-		function handleFormSubmit() {
-			submitted = true;
-		}
 
-		function showThankYou() {
-			document.getElementById('rsvp-form').style.display = 'none';
-			document.getElementById('thank-you').style.display = 'block';
-		}
-	</script>
 
 	<footer id="fh5co-footer" role="contentinfo">
 		<div class="container">
