@@ -70,37 +70,42 @@
 	<![endif]-->
 
 	<script>
-		let submitted = false;
-		let rsvpTimeoutId = null;
+		// Submitting via a hidden iframe (the old approach) opens a real
+		// cross-origin browsing context, which iOS Safari and in-app browsers
+		// (WhatsApp/Instagram/Facebook) routinely block or interrupt under their
+		// tracking-prevention rules — the iframe still fires "load", so the site
+		// showed a success modal even though Google never received the data.
+		// fetch() doesn't open a frame, so it sidesteps that whole category of
+		// mobile failures; we still can't read Google's response (no-cors), but
+		// a rejected/failed network request now reliably rejects the promise.
+		function handleFormSubmit(e) {
+			e.preventDefault();
 
-		function handleFormSubmit() {
-			submitted = true;
-			clearTimeout(rsvpTimeoutId);
-			// Google Forms' hidden-iframe trick can't tell us the submission was
-			// rejected, only whether the request came back at all — if nothing
-			// comes back within 10s, treat it as a failed/uncertain submission.
-			rsvpTimeoutId = setTimeout(function () {
-				if (submitted) {
-					submitted = false;
-					showRsvpModal('error');
-				}
-			}, 10000);
-		}
+			var form = document.getElementById('rsvp-form');
+			var btn = form.querySelector('button[type="submit"]');
+			var originalBtnText = btn.textContent;
+			btn.disabled = true;
+			btn.textContent = 'Wag asseblief...';
 
-		function handleIframeLoad() {
-			if (submitted) {
-				clearTimeout(rsvpTimeoutId);
-				submitted = false;
+			var controller = new AbortController();
+			var timeoutId = setTimeout(function () { controller.abort(); }, 10000);
+			var params = new URLSearchParams(new FormData(form));
+
+			fetch(form.action, {
+				method: 'POST',
+				mode: 'no-cors',
+				body: params,
+				signal: controller.signal
+			}).then(function () {
+				clearTimeout(timeoutId);
 				showRsvpModal('success');
-			}
-		}
-
-		function handleIframeError() {
-			if (submitted) {
-				clearTimeout(rsvpTimeoutId);
-				submitted = false;
+			}).catch(function () {
+				clearTimeout(timeoutId);
 				showRsvpModal('error');
-			}
+			}).finally(function () {
+				btn.disabled = false;
+				btn.textContent = originalBtnText;
+			});
 		}
 
 		function showRsvpModal(type) {
@@ -574,7 +579,7 @@
 			<div class="row animate-box">
 				<div class="col-md-10 col-md-offset-1">
 
-					<form class="form-inline" id="rsvp-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdsX4LBT0jvqfnUhA0bCUat9OYLZcanefLd5lPIzmp-JSFd4w/formResponse" method="POST" target="hidden_iframe" onsubmit="handleFormSubmit()">
+					<form class="form-inline" id="rsvp-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdsX4LBT0jvqfnUhA0bCUat9OYLZcanefLd5lPIzmp-JSFd4w/formResponse" method="POST" target="hidden_iframe" onsubmit="handleFormSubmit(event)">
 						<div class="col-md-6 col-sm-6">
 							<div class="form-group">
 								<label for="name" class="sr-only">Naam</label>
@@ -584,7 +589,7 @@
 						<div class="col-md-6 col-sm-6">
 							<div class="form-group">
 								<label for="surname" class="sr-only">Van</label>
-								<input type="text" class="form-control" name="entry.789691499" id="surname" required placeholder="Van" autocomplete="surname">
+								<input type="text" class="form-control" name="entry.789691499" id="surname" required placeholder="Van" autocomplete="family-name">
 							</div>
 						</div>
 						<div class="col-md-6 col-sm-6">
@@ -598,7 +603,7 @@
 						<div class="col-md-6 col-sm-6">
 							<div class="form-group">
 								<label for="cell" class="sr-only">Selfoon</label>
-								<input type="text" class="form-control" name="entry.1894798319" id="cell" required placeholder="Selfoonnommer" autocomplete="cell phone">
+								<input type="text" class="form-control" name="entry.1894798319" id="cell" required placeholder="Selfoonnommer" autocomplete="tel">
 
 							</div>
 						</div>
@@ -702,7 +707,9 @@
 
 				
 
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="handleIframeLoad()" onerror="handleIframeError()"></iframe>
+<!-- No-JS fallback target only: with JS enabled, handleFormSubmit() intercepts
+     the submit and sends it via fetch() instead (see head script). -->
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
 <div id="rsvp-modal-overlay" class="rsvp-modal-overlay" onclick="if (event.target === this) closeRsvpModal();">
 	<div id="rsvp-modal" class="rsvp-modal" role="dialog" aria-modal="true" aria-labelledby="rsvp-modal-title">
