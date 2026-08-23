@@ -71,16 +71,81 @@
 
 	<script>
 		let submitted = false;
+		let rsvpTimeoutId = null;
 
 		function handleFormSubmit() {
 			submitted = true;
+			clearTimeout(rsvpTimeoutId);
+			// Google Forms' hidden-iframe trick can't tell us the submission was
+			// rejected, only whether the request came back at all — if nothing
+			// comes back within 10s, treat it as a failed/uncertain submission.
+			rsvpTimeoutId = setTimeout(function () {
+				if (submitted) {
+					submitted = false;
+					showRsvpModal('error');
+				}
+			}, 10000);
 		}
 
-		function showThankYou() {
-			document.getElementById('rsvp-form').style.display = 'none';
-			document.getElementById('thank-you').style.display = 'block';
-			document.getElementById('thank-you').classList.add('fade-in');
+		function handleIframeLoad() {
+			if (submitted) {
+				clearTimeout(rsvpTimeoutId);
+				submitted = false;
+				showRsvpModal('success');
+			}
 		}
+
+		function handleIframeError() {
+			if (submitted) {
+				clearTimeout(rsvpTimeoutId);
+				submitted = false;
+				showRsvpModal('error');
+			}
+		}
+
+		function showRsvpModal(type) {
+			var overlay = document.getElementById('rsvp-modal-overlay');
+			var modal = document.getElementById('rsvp-modal');
+			var icon = document.getElementById('rsvp-modal-icon');
+			var title = document.getElementById('rsvp-modal-title');
+			var text = document.getElementById('rsvp-modal-text');
+
+			modal.classList.remove('success', 'error');
+			modal.classList.add(type);
+
+			if (type === 'success') {
+				icon.className = 'rsvp-modal-icon fa-solid fa-circle-check';
+				title.textContent = 'Dankie!';
+				text.textContent = 'Jou RSVP is ontvang. Ons kan nie wag om saam met julle te vier nie!';
+				var form = document.getElementById('rsvp-form');
+				if (form) { form.reset(); }
+			} else {
+				icon.className = 'rsvp-modal-icon fa-solid fa-triangle-exclamation';
+				title.textContent = 'Hmm...';
+				text.textContent = 'Ons kon nie jou RSVP se aflewering bevestig nie. Probeer asseblief weer, of kontak vir Everhard of Daniek direk as dit voortduur.';
+			}
+
+			overlay.style.display = 'flex';
+			requestAnimationFrame(function () {
+				overlay.classList.add('open');
+			});
+			document.body.style.overflow = 'hidden';
+		}
+
+		function closeRsvpModal() {
+			var overlay = document.getElementById('rsvp-modal-overlay');
+			overlay.classList.remove('open');
+			document.body.style.overflow = '';
+			setTimeout(function () {
+				overlay.style.display = 'none';
+			}, 300);
+		}
+
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape') {
+				closeRsvpModal();
+			}
+		});
 	</script>
 
 	</head>
@@ -505,9 +570,6 @@
 				</div>
 			</div>
 
-			<div id="thank-you" class="thank-you-message animate-box" style="text-align: center; display:none;"> 
-				<h3 style="color: rgba(255, 255, 255, 0.5);">Dankie vir jou boodskap!</h3>
-			</div>
 
 			<div class="row animate-box">
 				<div class="col-md-10 col-md-offset-1">
@@ -558,7 +620,7 @@
 
 
 						<div class="text-center form-question animate-box">
-							<p><i class="fa-solid fa-martini-glass-citrus"></i>  Kies asb jou welkom-drankie</p>
+							<p><i class="fa-solid fa-martini-glass-citrus"></i>  Kies asb jou welkom-drankie <span class="required-asterisk">*</span></p>
 						</div>
 
 
@@ -566,15 +628,15 @@
 							<div class="radio-card form-group">
 								<div class="radio-grid">
 									<label for="rosewyn">
-										<input type="radio" name="entry.1817158878"  value="rose" style="accent-color: #C79AA2;" id="rosewyn">Rosé</label>
+										<input type="radio" name="entry.1817158878"  value="rose" required style="accent-color: #C79AA2;" id="rosewyn">Rosé</label>
 									<label for="mrsmuller">
-										<input type="radio" name="entry.1817158878" value="mrs muller" style="accent-color: #C79AA2;" id="mrsmuller">Mrs Müller aperitif</label>
+										<input type="radio" name="entry.1817158878" value="mrs muller" required style="accent-color: #C79AA2;" id="mrsmuller">Mrs Müller aperitif</label>
 									<label for="mcc">
-										<input type="radio" name="entry.1817158878" value="mcc" style="accent-color: #C79AA2;" id="mcc"> Cap Classique</label>
+										<input type="radio" name="entry.1817158878" value="mcc" required style="accent-color: #C79AA2;" id="mcc"> Cap Classique</label>
 									<label for="craftbeer">
-										<input type="radio" name="entry.1817158878" value="craft beer" style="accent-color: #C79AA2;" id="craftbeer">Boetiekbier</label>
+										<input type="radio" name="entry.1817158878" value="craft beer" required style="accent-color: #C79AA2;" id="craftbeer">Boetiekbier</label>
 									<label for="lemonade">
-										<input type="radio" name="entry.1817158878" value="pink lemonade" style="accent-color: #C79AA2;" id="lemonade">Pienk lemonade (nie-alkoholies)</label>
+										<input type="radio" name="entry.1817158878" value="pink lemonade" required style="accent-color: #C79AA2;" id="lemonade">Pienk lemonade (nie-alkoholies)</label>
 								</div>
 							</div>
 						</div>
@@ -599,17 +661,17 @@
 <!--						</div>-->
 
 						<div class="text-center form-question animate-box">
-							<p><i class="fa-solid fa-champagne-glasses"></i>  Wat is jou wynvoorkeur?</p>
+							<p><i class="fa-solid fa-champagne-glasses"></i>  Wat is jou wynvoorkeur? <span class="required-asterisk">*</span></p>
 						</div>
 
 						<div class="col-md-12 col-sm-12">
 							<div class="radio-card form-group">
 							<div class="radio-grid">
-								<label for="rooi"><input type="radio" name="entry.1653885075"  value="rooi" style="accent-color: #C79AA2;" id="rooi"> Rooiwyn</label>
-								<label for="wit"><input type="radio" name="entry.1653885075" value="wit" style="accent-color: #C79AA2;" id="wit"> Witwyn</label>
-								<label for="rose"><input type="radio" name="entry.1653885075" value="rose" style="accent-color: #C79AA2;" id="rose"> Rosé</label>
-								<label for="other"><input type="radio" name="entry.1653885075" value="nonalc" style="accent-color: #C79AA2;" id="nonalc">Nie-alkoholies</label>
-								<label for="other"><input type="radio" name="entry.1653885075" value="other" style="accent-color: #C79AA2;" id="other">Ander (kontantkroeg)</label>
+								<label for="rooi"><input type="radio" name="entry.1653885075"  value="rooi" required style="accent-color: #C79AA2;" id="rooi"> Rooiwyn</label>
+								<label for="wit"><input type="radio" name="entry.1653885075" value="wit" required style="accent-color: #C79AA2;" id="wit"> Witwyn</label>
+								<label for="rose"><input type="radio" name="entry.1653885075" value="rose" required style="accent-color: #C79AA2;" id="rose"> Rosé</label>
+								<label for="nonalc"><input type="radio" name="entry.1653885075" value="nonalc" required style="accent-color: #C79AA2;" id="nonalc">Nie-alkoholies</label>
+								<label for="other"><input type="radio" name="entry.1653885075" value="other" required style="accent-color: #C79AA2;" id="other">Ander (kontantkroeg)</label>
 							</div>
 							</div>
 						</div>
@@ -640,9 +702,17 @@
 
 				
 
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { showThankYou(); }"></iframe>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="handleIframeLoad()" onerror="handleIframeError()"></iframe>
 
-
+<div id="rsvp-modal-overlay" class="rsvp-modal-overlay" onclick="if (event.target === this) closeRsvpModal();">
+	<div id="rsvp-modal" class="rsvp-modal" role="dialog" aria-modal="true" aria-labelledby="rsvp-modal-title">
+		<button type="button" class="rsvp-modal-close" onclick="closeRsvpModal()" aria-label="Maak toe">&times;</button>
+		<i id="rsvp-modal-icon" class="rsvp-modal-icon fa-solid fa-circle-check"></i>
+		<h3 id="rsvp-modal-title">Dankie!</h3>
+		<p id="rsvp-modal-text">Jou RSVP is ontvang.</p>
+		<button type="button" class="btn rsvp-modal-btn" onclick="closeRsvpModal()">Maak toe</button>
+	</div>
+</div>
 
 
 	<footer id="fh5co-footer" role="contentinfo">
