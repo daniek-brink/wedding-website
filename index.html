@@ -100,8 +100,8 @@
 		</div>
 	</nav>
 
-	<header id="fh5co-header" class="fh5co-cover" role="banner" style="background-image:url(images/pink-texture.jpg);" data-stellar-background-ratio="0.5">
-		<div class="overlay"></div>
+	<header id="fh5co-header" class="fh5co-cover" role="banner" style="background-image:url(images/bg2.png);" data-stellar-background-ratio="0.5">
+<!--		<div class="overlay"></div>-->
 		<div class="container">
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2 text-center">
@@ -110,7 +110,7 @@
 							<h1>Everhard </h1><h1 style="line-height: 0;">&amp; </h1><h1>Daniek</h1>
 							<h2>28 November 2026 17:30<br>Pink Valley Wines (Stellenbosch)</h2>
 							<div class="simply-countdown simply-countdown-one"></div>
-							<p><a href="#fh5co-started" class="btn btn-default btn-sm">RSVP</a></p>
+							<p><a href="#fh5co-started" class="btn btn-default btn-sm">RSVP voor 10 September 2026</a></p>
 						</div>
 					</div>
 				</div>
@@ -467,7 +467,7 @@
 			<div class="row animate-box">
 				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
 					<h2>Sien ons jou daar?</h2>
-					<p>Vul asb die vorm in voor <strong>31 Augustus 2026</strong></p>
+					<p>Vul asb die vorm in voor <strong>10 September 2026</strong></p>
 				</div>
 			</div>
 
@@ -487,8 +487,22 @@
 						</div>
 						<div class="col-md-6 col-sm-6">
 							<div class="form-group">
+								<label for="surname" class="sr-only">Van</label>
+								<input type="text" class="form-control" name="entry.789691499" id="surname" required placeholder="Van" autocomplete="surname">
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
 								<label for="email" class="sr-only">E-pos</label>
-								<input type="email" class="form-control" name="entry.1424661284" id="email" required placeholder="E-pos" autocomplete="email">
+								<input type="email" class="form-control" name="entry.1424661284" id="email" placeholder="E-pos" autocomplete="email">
+
+							</div>
+						</div>
+
+						<div class="col-md-6 col-sm-6">
+							<div class="form-group">
+								<label for="cell" class="sr-only">Selfoon</label>
+								<input type="text" class="form-control" name="entry.1894798319" id="cell" required placeholder="Selfoonnommer" autocomplete="cell phone">
 
 							</div>
 						</div>
@@ -531,23 +545,24 @@
 							</div>
 						</div>
 
-						<div class="text-center form-question animate-box">
-							<p><i class="fa-solid fa-utensils"></i>  Kies asb wat jy wil eet</p>
-						</div>
 
-						<div class="col-md-12 col-sm-12">
-							<div class="radio-card form-group ">
-								<div>
-									<label for="porkbelly">
-											<input type="radio" name="entry.1472162737"  value="pork belly" style="accent-color: #F14E95;" id="porkbelly"> Sticky pork belly • kimchee mayo • crushed cucumber salad • spiced cracker	<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></label>
-										<label for="chicken">
-											<input type="radio" name="entry.1472162737" value="chicken" style="accent-color: #F14E95;" id="chicken"> Truffled chicken • Provençal mushroom crème • caper • fondant potato</label>
-										<label for="sirloin">
-											<input type="radio" name="entry.1472162737" value="sirloin" style="accent-color: #F14E95;" id="sirloin"> Dry aged sirloin • stout & marrow sauce • fondant potato • garlic green beans</label>
-								</div>
-								</div>
-									
-						</div>
+<!--						<div class="text-center form-question animate-box">-->
+<!--							<p><i class="fa-solid fa-utensils"></i>  Kies asb wat jy wil eet</p>-->
+<!--						</div>-->
+
+<!--						<div class="col-md-12 col-sm-12">-->
+<!--							<div class="radio-card form-group ">-->
+<!--								<div>-->
+<!--									<label for="porkbelly">-->
+<!--											<input type="radio" name="entry.1472162737"  value="pork belly" style="accent-color: #F14E95;" id="porkbelly"> Sticky pork belly • kimchee mayo • crushed cucumber salad • spiced cracker	<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></label>-->
+<!--										<label for="chicken">-->
+<!--											<input type="radio" name="entry.1472162737" value="chicken" style="accent-color: #F14E95;" id="chicken"> Truffled chicken • Provençal mushroom crème • caper • fondant potato</label>-->
+<!--										<label for="sirloin">-->
+<!--											<input type="radio" name="entry.1472162737" value="sirloin" style="accent-color: #F14E95;" id="sirloin"> Dry aged sirloin • stout & marrow sauce • fondant potato • garlic green beans</label>-->
+<!--								</div>-->
+<!--								</div>-->
+<!--									-->
+<!--						</div>-->
 
 						<div class="text-center form-question animate-box">
 							<p><i class="fa-solid fa-champagne-glasses"></i>  Wat is jou wynvoorkeur?</p>
@@ -559,13 +574,13 @@
 								<label for="rooi"><input type="radio" name="entry.1653885075"  value="rooi" style="accent-color: #F14E95;" id="rooi"> Rooiwyn</label>
 								<label for="wit"><input type="radio" name="entry.1653885075" value="wit" style="accent-color: #F14E95;" id="wit"> Witwyn</label>
 								<label for="rose"><input type="radio" name="entry.1653885075" value="rose" style="accent-color: #F14E95;" id="rose"> Rosé</label>
+								<label for="other"><input type="radio" name="entry.1653885075" value="nonalc" style="accent-color: #F14E95;" id="nonalc">Nie-alkoholies</label>
 								<label for="other"><input type="radio" name="entry.1653885075" value="other" style="accent-color: #F14E95;" id="other">Ander (kontantkroeg)</label>
 							</div>
 							</div>
 						</div>
 
 
-								
 
 					
 						<div class="col-md-12 col-sm-12">
