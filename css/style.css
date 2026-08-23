@@ -7,9 +7,22 @@
 }
 /* =======================================================
 *
-* 	Template Style 
+* 	Template Style
 *
 * ======================================================= */
+
+/* -------------------------------------------------------
+   Wedding colour palette
+   ------------------------------------------------------- */
+:root {
+  --color-brown: #5A3A21;
+  --color-taupe: #B8A48F;
+  --color-sage: #8FA296;
+  --color-rose: #C79AA2;
+  --color-rose-dark: #A37E84;
+  --color-sage-dark: #75847A;
+}
+
 body {
   font-family: "Work Sans", Arial, sans-serif;
   font-weight: 400;
@@ -47,13 +60,13 @@ body {
 }
 
 a {
-  color: #F14E95;
+  color: var(--color-rose);
   -webkit-transition: 0.5s;
   -o-transition: 0.5s;
   transition: 0.5s;
 }
 a:hover, a:active, a:focus {
-  color: #F14E95;
+  color: var(--color-rose);
   outline: none;
   text-decoration: none;
 }
@@ -63,7 +76,7 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6, figure {
-  color: #000;
+  color: var(--color-brown);
   font-family: "Work Sans", Arial, sans-serif;
   font-weight: 400;
   margin: 0 0 20px 0;
@@ -71,17 +84,17 @@ h1, h2, h3, h4, h5, h6, figure {
 
 ::-webkit-selection {
   color: #fff;
-  background: #F14E95;
+  background: var(--color-rose);
 }
 
 ::-moz-selection {
   color: #fff;
-  background: #F14E95;
+  background: var(--color-rose);
 }
 
 ::selection {
   color: #fff;
-  background: #F14E95;
+  background: var(--color-rose);
 }
 
 .fh5co-nav {
@@ -196,7 +209,7 @@ h1, h2, h3, h4, h5, h6, figure {
   color: #fff;
 }
 .fh5co-nav ul li.btn-cta a {
-  color: #F14E95;
+  color: var(--color-rose);
 }
 .fh5co-nav ul li.btn-cta a span {
   background: #fff;
@@ -768,7 +781,7 @@ h1, h2, h3, h4, h5, h6, figure {
   display: inline-block;
   zoom: 1;
   *display: inline;
-  color: #F14E95;
+  color: var(--color-rose);
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -787,7 +800,7 @@ h1, h2, h3, h4, h5, h6, figure {
   position: relative;
 }
 .fh5co-contact-info ul li:before {
-  color: #F14E95;
+  color: var(--color-rose);
   position: absolute;
   left: 0;
   top: .05em;
@@ -837,6 +850,7 @@ form label {
   margin: 0;
   padding: 0;
   color: white;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55), 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 #fh5co-header .display-tc h1,
 #fh5co-counter .display-tc h1,
@@ -874,15 +888,40 @@ form label {
     font-size: 16px;
   }
 }
+
+.hero-monogram {
+  display: block;
+  width: 320px;
+  max-width: 80%;
+  height: auto;
+  margin: 0 auto 20px auto;
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.5)) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.45));
+}
+@media screen and (max-width: 768px) {
+  .hero-monogram {
+    width: 220px;
+    margin-bottom: 15px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .hero-monogram {
+    width: 170px;
+    margin-bottom: 10px;
+  }
+}
+
 #fh5co-header .display-tc .btn,
 #fh5co-counter .display-tc .btn,
 .fh5co-cover .display-tc .btn {
   padding: 15px 20px;
   background: #fff !important;
-  color: #F14E95;
+  color: var(--color-brown);
   border: none !important;
   font-size: 14px;
+  font-weight: 600;
   text-transform: uppercase;
+  text-shadow: none;
+  letter-spacing: 0.5px;
 }
 #fh5co-header .display-tc .btn:hover,
 #fh5co-counter .display-tc .btn:hover,
@@ -942,7 +981,7 @@ form label {
   display: inline-block;
   width: 100px;
   height: 100px;
-  background: rgba(241, 78, 149, 0.8);
+  background: rgba(199, 154, 162, 0.85);
   margin: 0 4px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -998,6 +1037,7 @@ form label {
 #fh5co-couple-story,
 #fh5co-couple,
 #fh5co-gallery,
+#fh5co-gifts,
 .fh5co-section {
   padding: 7em 0;
   clear: both;
@@ -1011,8 +1051,59 @@ form label {
   #fh5co-couple-story,
   #fh5co-couple,
   #fh5co-gallery,
+  #fh5co-gifts,
   .fh5co-section {
     padding: 3em 0;
+  }
+}
+
+/* -------------------------------------------------------
+   Gifts / honeymoon fund section
+   ------------------------------------------------------- */
+.gift-card {
+  background: rgba(199, 154, 162, 0.08);
+  border: 1px solid rgba(90, 58, 33, 0.15);
+  border-radius: 8px;
+  padding: 45px 40px;
+}
+.gift-card-icon {
+  display: block;
+  font-size: 36px;
+  color: var(--color-sage);
+  margin-bottom: 18px;
+}
+.gift-card h3 {
+  font-size: 22px;
+  color: var(--color-brown);
+  margin-bottom: 25px;
+}
+.gift-details {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.gift-details li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(90, 58, 33, 0.12);
+  color: #5d5d5d;
+  font-size: 16px;
+}
+.gift-details li:last-child {
+  border-bottom: none;
+}
+.gift-details li span {
+  display: block;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  color: var(--color-rose-dark);
+  margin-bottom: 3px;
+}
+@media screen and (max-width: 768px) {
+  .gift-card {
+    padding: 30px 25px;
   }
 }
 
@@ -1043,7 +1134,7 @@ form label {
   font-size: 20px;
   background: #fff;
   padding: 20px;
-  color: #F14E95;
+  color: var(--color-rose);
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
@@ -1066,7 +1157,7 @@ form label {
 }
 .couple-half h3 {
   font-family: "Sacramento", Arial, serif;
-  color: #F14E95;
+  color: var(--color-rose);
   font-size: 30px;
 }
 .couple-half .groom, .couple-half .bride {
@@ -1159,7 +1250,7 @@ form label {
   height: 90px;
   font-size: 40px;
   line-height: 40px;
-  color: #F14E95;
+  color: var(--color-rose);
 }
 .feature-center p, .feature-center h3 {
   margin-bottom: 30px;
@@ -1181,7 +1272,7 @@ form label {
   margin-bottom: 10px;
   line-height: 1.5;
   font-weight: bold;
-  color: #F14E95;
+  color: var(--color-rose);
   font-family: "Sacramento", Arial, serif;
 }
 @media screen and (max-width: 768px) {
@@ -1216,7 +1307,7 @@ form label {
   display: block;
 }
 #fh5co-testimonial .wrap-testimony .testimony-slide span a.twitter {
-  color: #F14E95;
+  color: var(--color-rose);
   font-weight: 300;
 }
 #fh5co-testimonial .wrap-testimony .testimony-slide figure {
@@ -1308,7 +1399,7 @@ form label {
   display: table-cell;
   vertical-align: middle;
   font-size: 30px;
-  color: #F14E95;
+  color: var(--color-rose);
 }
 .feature-left .feature-copy {
   float: left;
@@ -1328,10 +1419,11 @@ form label {
 }
 
 .form-question {
-  
   font-size: 18px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 40px;
+  margin-bottom: 18px;
 }
 
 #thank-you {
@@ -1352,18 +1444,19 @@ form label {
   -o-transition: 0.5s;
   transition: 0.5s;
   border-radius: 4px;
-  padding: 10px;
+  padding: 18px 22px;
+  margin-bottom: 10px;
 }
 
 .radio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 0px;
+  gap: 14px 30px;
 }
 .radio-card label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding-top: 5px;
 }
 
@@ -1434,7 +1527,7 @@ form label {
 #fh5co-started .btn {
   height: 54px;
   border: none !important;
-  background: #F14E95;
+  background: var(--color-rose);
   color: #fff;
   font-size: 16px;
   text-transform: uppercase;
@@ -1444,7 +1537,7 @@ form label {
 }
 #fh5co-started .form-inline .form-group {
   width: 100% !important;
-  margin-bottom: 10px;
+  margin-bottom: 22px;
 }
 #fh5co-started .form-inline .form-group .form-control {
   width: 100%;
@@ -1454,6 +1547,15 @@ form label {
 }
 #fh5co-started .fh5co-heading h2 {
   margin-bottom: 0;
+}
+#fh5co-started form .row.animate-box:last-child {
+  margin-top: 35px;
+}
+@media screen and (min-width: 768px) {
+  #fh5co-started .col-md-6.col-sm-6 {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -1478,7 +1580,7 @@ form label {
 }
 .owl-carousel .owl-controls .owl-dot.active span {
   background: transparent;
-  border: 2px solid #F14E95;
+  border: 2px solid var(--color-rose);
 }
 
 #fh5co-offcanvas {
@@ -1731,21 +1833,21 @@ form label {
 }
 
 .btn-primary {
-  background: #F14E95;
+  background: var(--color-rose);
   color: #fff;
-  border: 2px solid #F14E95;
+  border: 2px solid var(--color-rose);
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-  background: #f366a3 !important;
-  border-color: #f366a3 !important;
+  background: var(--color-rose-dark) !important;
+  border-color: var(--color-rose-dark) !important;
 }
 .btn-primary.btn-outline {
   background: transparent;
-  color: #F14E95;
-  border: 2px solid #F14E95;
+  color: var(--color-rose);
+  border: 2px solid var(--color-rose);
 }
 .btn-primary.btn-outline:hover, .btn-primary.btn-outline:focus, .btn-primary.btn-outline:active {
-  background: #F14E95;
+  background: var(--color-rose);
   color: #fff;
 }
 
@@ -1875,7 +1977,7 @@ form label {
 .form-control:active, .form-control:focus {
   outline: none;
   box-shadow: none;
-  border-color: #F14E95;
+  border-color: var(--color-rose);
 }
 
 .row-pb-md {
