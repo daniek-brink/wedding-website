@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]>      <html lang="af" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="af" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="af" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="af" class="no-js"> <!--<![endif]-->
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Nikki en Evie trou</title>
 
 	<!-- Favicon -->
@@ -13,7 +14,7 @@
 	<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
 	<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/favicon-192.png">
 
   <!-- 
 	//////////////////////////////////////////////////////
@@ -78,6 +79,15 @@
 		// fetch() doesn't open a frame, so it sidesteps that whole category of
 		// mobile failures; we still can't read Google's response (no-cors), but
 		// a rejected/failed network request now reliably rejects the promise.
+		//
+		// CAVEAT: mode:'no-cors' yields an *opaque* response — status is always 0
+		// and the promise resolves even when Google returns 401/400. So this can
+		// only report "sent", never "accepted". That makes it essential that the
+		// Google Form accepts anonymous responses: if the form requires a signed-in
+		// Google account, every guest without a Google session (in-app browsers,
+		// iOS Safari with cross-site tracking prevention) gets the success modal
+		// while the RSVP is silently dropped. Sanity check by opening the form's
+		// /viewform URL in a private window — it must load without a sign-in prompt.
 		function handleFormSubmit(e) {
 			e.preventDefault();
 
@@ -108,6 +118,60 @@
 			});
 		}
 
+		// The welcome-drink and wine questions only make sense for guests who are
+		// coming. They are NOT required in the Google Form (deliberately — a required
+		// question that we post nothing for is rejected with a 400, and mode:'no-cors'
+		// hides that, so the decline would silently vanish). The site is the only
+		// submission path, so it enforces them itself for anyone answering "Ja".
+		var attendanceSectionsWereHidden = false;
+
+		function syncAttendanceSections() {
+			var attending = document.getElementById('yes').checked;
+
+			Array.prototype.forEach.call(
+				document.querySelectorAll('.js-attending-only'),
+				function (section) {
+					section.hidden = !attending;
+
+					// Two of these are .animate-box headings, which sit at opacity 0
+					// until a scroll waypoint fades them in — and that waypoint fires
+					// once. Re-showing after it has passed would leave the heading
+					// invisible above its options, so pin it visible instead. Only on
+					// a genuine re-show, so the first-view fade-in is left intact.
+					if (attending && attendanceSectionsWereHidden) {
+						section.classList.add('js-force-visible');
+					}
+
+					Array.prototype.forEach.call(
+						section.querySelectorAll('input[type="radio"]'),
+						function (radio) {
+							radio.required = attending;
+							// Don't post a drink choice for someone who just said no.
+							if (!attending) { radio.checked = false; }
+						}
+					);
+
+					if (!attending) {
+						Array.prototype.forEach.call(
+							section.querySelectorAll('input[type="text"]'),
+							function (input) { input.value = ''; }
+						);
+					}
+				}
+			);
+
+			if (!attending) { attendanceSectionsWereHidden = true; }
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			Array.prototype.forEach.call(
+				document.querySelectorAll('input[name="entry.877086558"]'),
+				function (radio) { radio.addEventListener('change', syncAttendanceSections); }
+			);
+			// Run once on load: a back/forward restore can reinstate "Nee".
+			syncAttendanceSections();
+		});
+
 		function showRsvpModal(type) {
 			var overlay = document.getElementById('rsvp-modal-overlay');
 			var modal = document.getElementById('rsvp-modal');
@@ -121,9 +185,9 @@
 			if (type === 'success') {
 				icon.className = 'rsvp-modal-icon fa-solid fa-circle-check';
 				title.textContent = 'Dankie!';
-				text.textContent = 'Jou RSVP is ontvang. Ons kan nie wag om saam met julle te vier nie!';
+				text.textContent = 'Jou RSVP is gestuur. Ons kan nie wag om saam met julle te vier nie!';
 				var form = document.getElementById('rsvp-form');
-				if (form) { form.reset(); }
+				if (form) { form.reset(); syncAttendanceSections(); }
 			} else {
 				icon.className = 'rsvp-modal-icon fa-solid fa-triangle-exclamation';
 				title.textContent = 'Hmm...';
@@ -580,36 +644,36 @@
 				<div class="col-md-10 col-md-offset-1">
 
 					<form class="form-inline" id="rsvp-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdsX4LBT0jvqfnUhA0bCUat9OYLZcanefLd5lPIzmp-JSFd4w/formResponse" method="POST" target="hidden_iframe" onsubmit="handleFormSubmit(event)">
-						<div class="col-md-6 col-sm-6">
+						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="name" class="sr-only">Naam</label>
 								<input type="text" class="form-control" name="entry.1498135098" id="name" required placeholder="Naam" autocomplete="name">
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-6">
+						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="surname" class="sr-only">Van</label>
 								<input type="text" class="form-control" name="entry.789691499" id="surname" required placeholder="Van" autocomplete="family-name">
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-6">
+						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="email" class="sr-only">E-pos</label>
-								<input type="email" class="form-control" name="entry.1424661284" id="email" placeholder="E-pos" autocomplete="email">
+								<input type="email" class="form-control" name="entry.1424661284" id="email" placeholder="E-pos" autocomplete="email" autocapitalize="off" spellcheck="false">
 
 							</div>
 						</div>
 
-						<div class="col-md-6 col-sm-6">
+						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="cell" class="sr-only">Selfoon</label>
-								<input type="text" class="form-control" name="entry.1894798319" id="cell" required placeholder="Selfoonnommer" autocomplete="tel">
+								<input type="tel" inputmode="tel" class="form-control" name="entry.1894798319" id="cell" required placeholder="Selfoonnommer" autocomplete="tel">
 
 							</div>
 						</div>
 
 
-						<div class="col-md-12 col-sm-12">
+						<div class="col-xs-12">
 							
 							<div class="radio-card form-group">
 
@@ -624,12 +688,12 @@
 						</div>
 
 
-						<div class="text-center form-question animate-box">
+						<div class="text-center form-question animate-box js-attending-only">
 							<p><i class="fa-solid fa-martini-glass-citrus"></i>  Kies asb jou welkom-drankie <span class="required-asterisk">*</span></p>
 						</div>
 
 
-						<div class="col-md-12 col-sm-12">
+						<div class="col-xs-12 js-attending-only">
 							<div class="radio-card form-group">
 								<div class="radio-grid">
 									<label for="rosewyn">
@@ -651,7 +715,7 @@
 <!--							<p><i class="fa-solid fa-utensils"></i>  Kies asb wat jy wil eet</p>-->
 <!--						</div>-->
 
-<!--						<div class="col-md-12 col-sm-12">-->
+<!--						<div class="col-xs-12">-->
 <!--							<div class="radio-card form-group ">-->
 <!--								<div>-->
 <!--									<label for="porkbelly">-->
@@ -665,11 +729,11 @@
 <!--									-->
 <!--						</div>-->
 
-						<div class="text-center form-question animate-box">
+						<div class="text-center form-question animate-box js-attending-only">
 							<p><i class="fa-solid fa-champagne-glasses"></i>  Wat is jou wynvoorkeur? <span class="required-asterisk">*</span></p>
 						</div>
 
-						<div class="col-md-12 col-sm-12">
+						<div class="col-xs-12 js-attending-only">
 							<div class="radio-card form-group">
 							<div class="radio-grid">
 								<label for="rooi"><input type="radio" name="entry.1653885075"  value="rooi" required style="accent-color: #C79AA2;" id="rooi"> Rooiwyn</label>
@@ -684,7 +748,7 @@
 
 
 					
-						<div class="col-md-12 col-sm-12">
+						<div class="col-xs-12 js-attending-only">
 							<div class="form-group">
 								<label for="diet" class="sr-only">Spesiale dieëtvereistes</label>
 								<input type="text" class="form-control" id="diet" name="entry.2606285" placeholder="Spesiale dieëtvereistes">
@@ -693,7 +757,7 @@
 
 
 
-						<div class="row animate-box">
+						<div class="col-xs-12 animate-box rsvp-submit-row">
 							<div class="text-center">
 								<button type="submit" class="btn btn-default">Stuur</button>
 							</div>

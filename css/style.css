@@ -2009,6 +2009,67 @@ form label {
 }
 
 /* -------------------------------------------------------
+   RSVP form — mobile / single column
+   ------------------------------------------------------- */
+/* Bootstrap floats these columns, which beats normalize's bare [hidden] rule. */
+.js-attending-only[hidden] {
+  display: none !important;
+}
+.js-attending-only.js-force-visible {
+  opacity: 1 !important;
+}
+
+.rsvp-submit-row {
+  margin-top: 35px;
+}
+#fh5co-started .radio-card label {
+  min-height: 44px;
+  line-height: 1.35;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+#fh5co-started .radio-card input[type="radio"] {
+  -webkit-flex: 0 0 20px;
+  -ms-flex: 0 0 20px;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+@media screen and (max-width: 767px) {
+  /* One field per row, with room to breathe and thumb-sized targets. */
+  #fh5co-started .form-inline .form-group {
+    margin-bottom: 16px;
+  }
+  #fh5co-started .form-control {
+    height: 50px;
+    /* 16px is the threshold below which iOS Safari zooms in on focus. */
+    font-size: 16px !important;
+  }
+  .radio-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .radio-card {
+    padding: 14px 16px;
+  }
+  .form-question {
+    margin-top: 28px;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+  #fh5co-started .btn {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .rsvp-submit-row {
+    margin-top: 24px;
+  }
+}
+
+/* -------------------------------------------------------
    RSVP submission modal
    ------------------------------------------------------- */
 .rsvp-modal-overlay {

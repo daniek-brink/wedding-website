@@ -2,6 +2,19 @@
 	
 	'use strict';
 
+	var closeOffcanvas = function() {
+		$('body').removeClass('overflow offcanvas');
+		$('.js-fh5co-nav-toggle').removeClass('active');
+	};
+
+	var mobileMenuLinkClick = function() {
+		// Navigating from the off-canvas menu has to close it, otherwise the
+		// page jumps to the anchor behind a menu that is still covering it.
+		$('body').on('click', '#fh5co-offcanvas a', function() {
+			closeOffcanvas();
+		});
+	};
+
 	var mobileMenuOutsideClick = function() {
 
 		$(document).click(function (e) {
@@ -108,7 +121,7 @@
 							}
 
 							el.removeClass('item-animate');
-						},  k * 200, 'easeInOutExpo' );
+						},  Math.min(k * 200, 1000), 'easeInOutExpo' );
 					});
 					
 				}, 100);
@@ -216,6 +229,7 @@
 	
 	$(function(){
 		mobileMenuOutsideClick();
+		mobileMenuLinkClick();
 		parallax();
 		offcanvasMenu();
 		burgerMenu();
