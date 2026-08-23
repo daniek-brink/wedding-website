@@ -92,6 +92,16 @@
 			e.preventDefault();
 
 			var form = document.getElementById('rsvp-form');
+
+			// checkValidity() re-runs constraint validation and fires 'invalid' on
+			// anything still unanswered (which re-applies our highlight — harmless
+			// if it's already there). Necessary because our 'invalid' listener
+			// cancels the event to suppress the native bubble, and canceling it
+			// is what tells the browser "this field's problem has been handled" —
+			// without this explicit re-check, the browser then treats the whole
+			// form as passing validation and lets the submit through anyway.
+			if (!form.checkValidity()) { return; }
+
 			var btn = form.querySelector('button[type="submit"]');
 			var originalBtnText = btn.textContent;
 			btn.disabled = true;
@@ -142,6 +152,18 @@
 						section.classList.add('js-force-visible');
 					}
 
+					if (!attending) {
+						// Hiding a section that was mid-error shouldn't leave stale
+						// red styling behind for when it's shown again.
+						section.classList.remove('rsvp-field-error');
+						var staleHint = section.querySelector('.rsvp-error-text');
+						if (staleHint) { staleHint.remove(); }
+						Array.prototype.forEach.call(
+							section.querySelectorAll('.radio-card, .form-question'),
+							function (el) { el.classList.remove('rsvp-field-error'); }
+						);
+					}
+
 					Array.prototype.forEach.call(
 						section.querySelectorAll('input[type="radio"]'),
 						function (radio) {
@@ -170,6 +192,104 @@
 			);
 			// Run once on load: a back/forward restore can reinstate "Nee".
 			syncAttendanceSections();
+		});
+
+		// Native "required" validation blocks the browser's own submit before our
+		// submit handler even runs, which is normally fine — except the bubble it
+		// shows to explain WHY is unreliable for radio groups on mobile (iOS Safari
+		// in particular often shows nothing at all), so a guest can tap "Stuur",
+		// have nothing visibly happen, and have no idea a question was missed.
+		// We keep the native "required" attributes (so this still degrades sanely
+		// with JS off), but replace the native bubble with an always-visible,
+		// persistent highlight + hint text on the actual question, and scroll to
+		// the first one that needs attention.
+		var rsvpFirstInvalidThisAttempt = null;
+
+		function rsvpErrorHint(text) {
+			var hint = document.createElement('p');
+			hint.className = 'rsvp-error-text';
+			hint.textContent = text;
+			return hint;
+		}
+
+		function markRsvpFieldInvalid(field) {
+			if (field.type === 'radio') {
+				var card = field.closest('.radio-card');
+				if (card) { card.classList.add('rsvp-field-error'); }
+
+				var wrapper = field.closest('.js-attending-only') || card;
+				var heading = wrapper && wrapper.previousElementSibling;
+				if (heading && heading.classList.contains('form-question')) {
+					heading.classList.add('rsvp-field-error');
+					if (!heading.querySelector('.rsvp-error-text')) {
+						heading.appendChild(rsvpErrorHint('Kies asseblief een van die opsies hieronder.'));
+					}
+				}
+			} else {
+				var group = field.closest('.form-group');
+				if (group) {
+					group.classList.add('rsvp-field-error');
+					if (!group.querySelector('.rsvp-error-text')) {
+						group.appendChild(rsvpErrorHint('Vul asseblief hierdie veld in.'));
+					}
+				}
+			}
+		}
+
+		function clearRsvpFieldError(field) {
+			if (field.type === 'radio') {
+				var card = field.closest('.radio-card');
+				if (card) { card.classList.remove('rsvp-field-error'); }
+
+				var wrapper = field.closest('.js-attending-only') || card;
+				var heading = wrapper && wrapper.previousElementSibling;
+				if (heading && heading.classList.contains('form-question')) {
+					heading.classList.remove('rsvp-field-error');
+					var headingHint = heading.querySelector('.rsvp-error-text');
+					if (headingHint) { headingHint.remove(); }
+				}
+			} else if (!field.matches(':invalid')) {
+				var group = field.closest('.form-group');
+				if (group) {
+					group.classList.remove('rsvp-field-error');
+					var groupHint = group.querySelector('.rsvp-error-text');
+					if (groupHint) { groupHint.remove(); }
+				}
+			}
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			var rsvpForm = document.getElementById('rsvp-form');
+			var rsvpSubmitBtn = rsvpForm.querySelector('button[type="submit"]');
+
+			rsvpSubmitBtn.addEventListener('click', function () {
+				rsvpFirstInvalidThisAttempt = null;
+			});
+
+			// 'invalid' doesn't bubble, so this has to be a capturing listener.
+			rsvpForm.addEventListener('invalid', function (e) {
+				e.preventDefault(); // suppress the unreliable native bubble
+				markRsvpFieldInvalid(e.target);
+
+				if (!rsvpFirstInvalidThisAttempt) {
+					rsvpFirstInvalidThisAttempt = e.target;
+					var scrollTarget = e.target.closest('.js-attending-only')
+						|| e.target.closest('.form-group')
+						|| e.target;
+					var heading = scrollTarget.previousElementSibling;
+					if (heading && heading.classList.contains('form-question')) {
+						scrollTarget = heading;
+					}
+					scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				}
+			}, true);
+
+			rsvpForm.addEventListener('change', function (e) {
+				if (e.target.matches('input')) { clearRsvpFieldError(e.target); }
+			});
+			rsvpForm.addEventListener('input', function (e) {
+				if (e.target.matches('input')) { clearRsvpFieldError(e.target); }
+			});
 		});
 
 		function showRsvpModal(type) {
@@ -792,7 +912,7 @@
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2016 Free HTML5. All Rights Reserved.</small> 
+						<small class="block">&copy; 2026 Free HTML5. All Rights Reserved.</small>
 						<small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FREEHTML5.co</a> Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small>
 					</p>
 					<!-- <p>
